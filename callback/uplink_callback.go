@@ -10,12 +10,12 @@ type UplinkCallback struct {
 }
 
 func ParseUplinkCallback(r *http.Request) (*UplinkCallback, error) {
-	c := &UplinkCallback{callback: &callback{}}
-	if err := parseCallback(r, c.callback); err != nil {
+	cb := &UplinkCallback{callback: &callback{}}
+	if err := parseCallback(r, cb.callback); err != nil {
 		return nil, err
 	}
 
-	return c, nil
+	return cb, nil
 }
 
 func (c *UplinkCallback) Equal(u *UplinkCallback) bool {

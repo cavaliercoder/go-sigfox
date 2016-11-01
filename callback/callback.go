@@ -4,12 +4,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 )
 
 type Callback interface {
 	// Timestamp of the received message
 	Timestamp() time.Time
+}
+
+type ContentTypeError string
+
+func (c ContentTypeError) Error() string {
+	return string(c)
+}
+
+type MethodError string
+
+func (c MethodError) Error() string {
+	return string(c)
 }
 
 // see: https://backend.sigfox.com/apidocs/callback
@@ -25,22 +38,29 @@ type callback struct {
 	Latitude       int64   `json:"lat"`
 	Longitude      int64   `json:"lng"`
 	SequenceNumber int64   `json:"seqNumber"`
+	Bidirectional  bool    `json:"ack"`
 }
 
-func parseCallback(r *http.Request, c *callback) error {
-	contentType := r.Header.Get("ContentType")
+func parseCallback(r *http.Request, cb *callback) error {
+	contentType := r.Header.Get("Content-Type")
 
-	if "application/json" == contentType {
-		// unmarshall to callback struct
-		decoder := json.NewDecoder(r.Body)
-		if err := decoder.Decode(c); err != nil {
-			return err
+	if r.Method == "POST" {
+		if strings.Compare("application/json", contentType) == 0 {
+			// unmarshall to callback struct
+			decoder := json.NewDecoder(r.Body)
+			if err := decoder.Decode(cb); err != nil {
+				return err
+			}
+
+			return nil
 		}
 
-		return nil
+		return ContentTypeError(fmt.Sprintf("Unsupported content type: %s", contentType))
+	} else {
+		return MethodError(fmt.Sprintf("Unsupported request method: %s", r.Method))
 	}
 
-	return fmt.Errorf("Unsupported content type: %s", contentType)
+	return nil
 }
 
 func (c *callback) Equal(b *callback) bool {

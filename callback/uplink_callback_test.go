@@ -2,6 +2,7 @@ package callback
 
 import (
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 )
@@ -24,6 +25,21 @@ func TestParseUplinkCallback(t *testing.T) {
 		},
 	}
 
+	// start hookup test server
+	ts := httptest.NewServer(HTTPHandlerFunc(func(cb Callback) error {
+		if uplink, ok := cb.(*UplinkCallback); !ok {
+			t.Errorf("Expected UplinkCallback type but got %t", cb)
+		} else if uplink == nil {
+			t.Errorf("Expected UplinkCallback type but got nil")
+		} else {
+			if !uplink.callback.Equal(ref.callback) {
+				t.Errorf("Parsed callback does not match expected value: %#v", uplink.callback)
+			}
+		}
+
+		return nil
+	}))
+
 	// build http callback request
 	body := strings.NewReader(`{
 		"time": 1477925692,
@@ -39,17 +55,10 @@ func TestParseUplinkCallback(t *testing.T) {
 		"seqNumber": 100
 	}`)
 
-	r, _ := http.NewRequest("POST", "/", body)
-	r.Header.Set("ContentType", "application/json")
-
 	// parse request body to UplinkCallback
-	c, err := ParseUplinkCallback(r)
-	if err != nil {
-		t.Fatalf("Failed to parse uplink callback with: %v", err)
-	}
-
-	// test that parsed callback equals reference
-	if !c.Equal(ref) {
-		t.Fatalf("Parsed callback does not match expected value: %#v", c.callback)
+	if resp, err := http.DefaultClient.Post(ts.URL, "application/json", body); err != nil {
+		t.Fatalf("Error: %v", err)
+	} else if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		t.Fatalf("Received non 200 response")
 	}
 }
