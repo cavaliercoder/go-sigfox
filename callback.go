@@ -4,7 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
+
+// Callback is an interface satisfied by all SIGFOX callback types.
+type Callback interface {
+	// Timestamp is the event time of this SIGFOX callback message.
+	Timestamp() time.Time
+}
 
 // encapsulates all possible sigfox callback types
 // see: https://backend.sigfox.com/apidocs/callback
