@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 )
 
 // encapsulates all possible sigfox callback types
@@ -25,23 +24,30 @@ type callback struct {
 }
 
 // parseCallback parses a http.Request and returns a base sigfox callback
-func parseCallback(r *http.Request, cb *callback) error {
+func parseCallback(r *http.Request, cb *callback) (int, error) {
+	defer r.Body.Close()
+
 	contentType := r.Header.Get("Content-Type")
-	if r.Method == "POST" {
-		if strings.Compare("application/json", contentType) == 0 {
+
+	switch r.Method {
+	case "POST":
+		switch contentType {
+		case "application/json":
 			// unmarshall JSON to callback struct
 			decoder := json.NewDecoder(r.Body)
 			if err := decoder.Decode(cb); err != nil {
-				return RequestBodyError(err.Error())
+				return http.StatusBadRequest, err
 			}
 
-			return nil
+		default:
+			return http.StatusBadRequest, fmt.Errorf("Unsupported content type: %s", contentType)
 		}
 
-		return ContentTypeError(fmt.Sprintf("Unsupported content type: %s", contentType))
+	default:
+		return http.StatusMethodNotAllowed, fmt.Errorf("Unsupported request method: %s", r.Method)
 	}
 
-	return MethodError(fmt.Sprintf("Unsupported request method: %s", r.Method))
+	return 0, nil
 }
 
 // Equal returns true if the values of two callback structs are equal

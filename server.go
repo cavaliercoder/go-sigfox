@@ -1,13 +1,10 @@
 package sigfox
 
 import (
-	"log"
 	"net/http"
 )
 
-type Server struct {
-	logger *log.Logger // TODO: implement access logs
-}
+type Server struct{}
 
 func (c *Server) ListenAndServe(addr string) error {
 	return http.ListenAndServe(addr, nil)
