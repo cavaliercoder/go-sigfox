@@ -1,6 +1,7 @@
 package callback
 
 import (
+	"bytes"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -26,18 +27,14 @@ func TestParseUplinkCallback(t *testing.T) {
 	}
 
 	// start hookup test server
-	ts := httptest.NewServer(HTTPHandlerFunc(func(cb Callback) error {
-		if uplink, ok := cb.(*UplinkCallback); !ok {
-			t.Errorf("Expected UplinkCallback type but got %t", cb)
-		} else if uplink == nil {
+	ts := httptest.NewServer(UplinkHandlerFunc(func(cb *UplinkCallback) {
+		if cb == nil {
 			t.Errorf("Expected UplinkCallback type but got nil")
 		} else {
-			if !uplink.callback.Equal(ref.callback) {
-				t.Errorf("Parsed callback does not match expected value: %#v", uplink.callback)
+			if !cb.Equal(ref) {
+				t.Errorf("Parsed callback does not match expected value: %#v", cb)
 			}
 		}
-
-		return nil
 	}))
 
 	// build http callback request
@@ -60,5 +57,20 @@ func TestParseUplinkCallback(t *testing.T) {
 		t.Fatalf("Error: %v", err)
 	} else if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		t.Fatalf("Received non 200 response")
+	}
+}
+
+func TestUplinkHandler(t *testing.T) {
+	ts := httptest.NewServer(UplinkHandlerFunc(func(cb *UplinkCallback) {}))
+	defer ts.Close()
+
+	body := bytes.NewReader([]byte("{}"))
+
+	if resp, err := http.Post(ts.URL, "application/json", body); err != nil {
+		t.Errorf("Error calling Handler: %v", err)
+	} else {
+		if resp.StatusCode < 200 || resp.StatusCode > 299 {
+			t.Errorf("Unexpected status code calling Handler: %v", resp.StatusCode)
+		}
 	}
 }

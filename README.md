@@ -1,4 +1,4 @@
 # go-sigfox
 
-A Go packag for interfacing with the SigFox IoT network.
+A Go package for interfacing with the SigFox IoT network.
 

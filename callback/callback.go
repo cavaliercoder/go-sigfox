@@ -5,26 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 )
 
-type Callback interface {
-	// Timestamp of the received message
-	Timestamp() time.Time
-}
-
-type ContentTypeError string
-
-func (c ContentTypeError) Error() string {
-	return string(c)
-}
-
-type MethodError string
-
-func (c MethodError) Error() string {
-	return string(c)
-}
-
+// encapsulates all possible sigfox callback types
 // see: https://backend.sigfox.com/apidocs/callback
 type callback struct {
 	TimestampEpoch int64   `json:"time"`
@@ -41,28 +24,27 @@ type callback struct {
 	Bidirectional  bool    `json:"ack"`
 }
 
+// parseCallback parses a http.Request and returns a base sigfox callback
 func parseCallback(r *http.Request, cb *callback) error {
 	contentType := r.Header.Get("Content-Type")
-
 	if r.Method == "POST" {
 		if strings.Compare("application/json", contentType) == 0 {
-			// unmarshall to callback struct
+			// unmarshall JSON to callback struct
 			decoder := json.NewDecoder(r.Body)
 			if err := decoder.Decode(cb); err != nil {
-				return err
+				return RequestBodyError(err.Error())
 			}
 
 			return nil
 		}
 
 		return ContentTypeError(fmt.Sprintf("Unsupported content type: %s", contentType))
-	} else {
-		return MethodError(fmt.Sprintf("Unsupported request method: %s", r.Method))
 	}
 
-	return nil
+	return MethodError(fmt.Sprintf("Unsupported request method: %s", r.Method))
 }
 
+// Equal returns true if the values of two callback structs are equal
 func (c *callback) Equal(b *callback) bool {
 	return c.TimestampEpoch == b.TimestampEpoch &&
 		c.DeviceID == b.DeviceID &&
@@ -75,5 +57,4 @@ func (c *callback) Equal(b *callback) bool {
 		c.Latitude == b.Latitude &&
 		c.Longitude == b.Longitude &&
 		c.SequenceNumber == b.SequenceNumber
-
 }

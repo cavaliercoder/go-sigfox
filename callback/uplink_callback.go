@@ -5,17 +5,22 @@ import (
 	"time"
 )
 
+// UplinkCallback is a callback message from the SIGFOX servers of the uplink
+// type.
 type UplinkCallback struct {
 	callback *callback
 }
 
-func ParseUplinkCallback(r *http.Request) (*UplinkCallback, error) {
-	cb := &UplinkCallback{callback: &callback{}}
-	if err := parseCallback(r, cb.callback); err != nil {
-		return nil, err
-	}
+type UplinkHandler interface {
+	ServeHTTP(http.ResponseWriter, *http.Request)
+}
 
-	return cb, nil
+type UplinkHandlerFunc func(*UplinkCallback)
+
+func (f UplinkHandlerFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	callbackHandlerFunc(func(cb *callback) {
+		f(&UplinkCallback{callback: cb})
+	}).ServeHTTP(w, r)
 }
 
 func (c *UplinkCallback) Equal(u *UplinkCallback) bool {
@@ -27,7 +32,7 @@ func (c *UplinkCallback) Timestamp() time.Time {
 	return time.Unix(c.callback.TimestampEpoch, 0)
 }
 
-// Device identifier in hexidecimal
+// Device identifier in hexadecimal
 func (c *UplinkCallback) DeviceID() string {
 	return c.callback.DeviceID
 }
@@ -53,7 +58,7 @@ func (c *UplinkCallback) RSSI() float64 {
 	return c.callback.RSSI
 }
 
-// Base station identifier in hexidecimal
+// Base station identifier in hexadecimal
 func (c *UplinkCallback) StationID() string {
 	return c.callback.StationID
 }
