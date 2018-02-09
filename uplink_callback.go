@@ -1,6 +1,7 @@
 package sigfox
 
 import (
+	"encoding/hex"
 	"net/http"
 	"time"
 )
@@ -65,7 +66,12 @@ func (c *UplinkCallback) StationID() string {
 
 // User data as a byte slice
 func (c *UplinkCallback) Data() []byte {
-	return []byte(c.callback.Data)
+	b, err := hex.DecodeString(c.callback.Data)
+	if err != nil {
+		dprintf("Error decoding SIGFOX payload: %v", err)
+	}
+
+	return b
 }
 
 // Latitude of the base station that received the message
