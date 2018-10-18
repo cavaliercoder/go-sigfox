@@ -12,6 +12,7 @@ type UplinkCallback struct {
 	callback *callback
 }
 
+// UplinkHandler responds to Uplink HTTP request.
 type UplinkHandler interface {
 	ServeHTTP(http.ResponseWriter, *http.Request)
 }
