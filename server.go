@@ -7,7 +7,8 @@ import (
 // A Server holds server data.
 type Server struct{}
 
-func (c *Server) ListenAndServe(addr string) error {
+// ListenAndServe listens on the TCP network address.
+func (s *Server) ListenAndServe(addr string) error {
 	return http.ListenAndServe(addr, nil)
 }
 
