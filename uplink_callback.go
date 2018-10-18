@@ -59,7 +59,7 @@ func (c *UplinkCallback) AverageSNR() float64 {
 	return c.callback.AverageSNR
 }
 
-// Received Signal Strength Indicator in dB
+// RSSI returns Received Signal Strength Indicator in dB.
 func (c *UplinkCallback) RSSI() float64 {
 	return c.callback.RSSI
 }
