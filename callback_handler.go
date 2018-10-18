@@ -19,7 +19,7 @@ func (f callbackHandlerFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if s, err := parseCallback(r, cb); err != nil {
 		// TODO: make error available to user
 		dprintf("Error parsing callback %v", err)
-		status = http.StatusInternalServerError
+		status = s
 	}
 
 	// respond to sigfox server
