@@ -4,9 +4,8 @@ import (
 	"net/http"
 )
 
-// A Server defines parameters for running an HTTP server.
-// The zero value for Server is a valid configuration.
-type Server http.Server
+// A Server holds server data.
+type Server struct{}
 
 func (c *Server) ListenAndServe(addr string) error {
 	return http.ListenAndServe(addr, nil)
