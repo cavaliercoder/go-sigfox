@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-// UplinkCallback is a callback message from the SIGFOX servers of the uplink
-// type.
+// UplinkCallback is a callback message from
+// the SIGFOX servers of the uplink type.
 type UplinkCallback struct {
 	callback *callback
 }
