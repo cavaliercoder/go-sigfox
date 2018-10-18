@@ -88,7 +88,7 @@ func (c *UplinkCallback) Longitude() int64 {
 	return c.callback.Longitude
 }
 
-// Sequence number of the message if available
+// SequenceID returns message sequence number.
 func (c *UplinkCallback) SequenceID() int64 {
 	return c.callback.SequenceNumber
 }
