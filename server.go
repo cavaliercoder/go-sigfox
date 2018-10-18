@@ -15,10 +15,11 @@ func (s *Server) ListenAndServe(addr string) error {
 
 // ListenAndServeTLS listens on the TCP network address and then
 // handle requests on incoming TLS connections.
-func (c *Server) ListenAndServerTLS(addr, certFile, keyFile string) error {
+func (s *Server) ListenAndServerTLS(addr, certFile, keyFile string) error {
 	return http.ListenAndServeTLS(addr, certFile, keyFile, nil)
 }
 
-func (c *Server) HandleUplink(pattern string, handler UplinkHandler) {
+// HandleUplink registers the handler for the given pattern.
+func (s *Server) HandleUplink(pattern string, handler UplinkHandler) {
 	http.Handle(pattern, handler)
 }
