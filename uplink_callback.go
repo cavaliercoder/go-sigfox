@@ -69,13 +69,12 @@ func (c *UplinkCallback) StationID() string {
 	return c.callback.StationID
 }
 
-// User data as a byte slice
+// Data returns User data as a byte slice.
 func (c *UplinkCallback) Data() []byte {
 	b, err := hex.DecodeString(c.callback.Data)
 	if err != nil {
 		dprintf("Error decoding SIGFOX payload: %v", err)
 	}
-
 	return b
 }
 
