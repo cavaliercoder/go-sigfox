@@ -78,12 +78,12 @@ func (c *UplinkCallback) Data() []byte {
 	return b
 }
 
-// Latitude of the base station that received the message
+// Latitude of the base station that received the message.
 func (c *UplinkCallback) Latitude() int64 {
 	return c.callback.Latitude
 }
 
-// Longitude of the base station that received the message
+// Longitude of the base station that received the message.
 func (c *UplinkCallback) Longitude() int64 {
 	return c.callback.Longitude
 }
