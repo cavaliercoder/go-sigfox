@@ -54,7 +54,7 @@ func (c *UplinkCallback) SNR() float64 {
 	return c.callback.SNR
 }
 
-// Average Signal to Noise Ratio for the last 25 messages
+// AverageSNR returns average for the last 25 messages.
 func (c *UplinkCallback) AverageSNR() float64 {
 	return c.callback.AverageSNR
 }
