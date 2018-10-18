@@ -17,6 +17,7 @@ type UplinkHandler interface {
 	ServeHTTP(http.ResponseWriter, *http.Request)
 }
 
+// UplinkHandlerFunc is an adapter to allow the use of ordinary functions as Uplink HTTP handlers.
 type UplinkHandlerFunc func(*UplinkCallback)
 
 func (f UplinkHandlerFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
