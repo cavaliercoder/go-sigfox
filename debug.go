@@ -1,7 +1,7 @@
 package sigfox
 
 import (
-	"fmt"
+	"log"
 	"os"
 )
 
@@ -9,7 +9,6 @@ import (
 // SIGFOX_DEBUG is non-zero.
 func dprintf(format string, a ...interface{}) {
 	if os.Getenv("SIGFOX_DEBUG") != "" {
-		fmt.Fprintf(os.Stderr, format, a...)
-		fmt.Fprintf(os.Stderr, "\n")
+		log.Printf(format, a...)
 	}
 }
