@@ -15,7 +15,7 @@ func (s *Server) ListenAndServe(addr string) error {
 
 // ListenAndServeTLS listens on the TCP network address and then
 // handle requests on incoming TLS connections.
-func (s *Server) ListenAndServerTLS(addr, certFile, keyFile string) error {
+func (s *Server) ListenAndServeTLS(addr, certFile, keyFile string) error {
 	return http.ListenAndServeTLS(addr, certFile, keyFile, nil)
 }
 
