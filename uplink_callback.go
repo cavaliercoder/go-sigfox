@@ -64,7 +64,7 @@ func (c *UplinkCallback) RSSI() float64 {
 	return c.callback.RSSI
 }
 
-// Base station identifier in hexadecimal
+// StationID returns hexadecimal Base station identifier.
 func (c *UplinkCallback) StationID() string {
 	return c.callback.StationID
 }
