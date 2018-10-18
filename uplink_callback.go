@@ -49,7 +49,7 @@ func (c *UplinkCallback) IsDuplicate() bool {
 	return c.callback.IsDuplicate
 }
 
-// Signal to Noise Ration
+// SNR returns Signal to Noise Ration.
 func (c *UplinkCallback) SNR() float64 {
 	return c.callback.SNR
 }
