@@ -37,7 +37,7 @@ func (c *UplinkCallback) Timestamp() time.Time {
 	return time.Unix(c.callback.TimestampEpoch, 0)
 }
 
-// Device identifier in hexadecimal
+// DeviceID returns hexadecimal device identifier.
 func (c *UplinkCallback) DeviceID() string {
 	return c.callback.DeviceID
 }
