@@ -7,7 +7,8 @@ import (
 // A Server holds server data.
 type Server struct{}
 
-// ListenAndServe listens on the TCP network address.
+// ListenAndServe listens on the TCP network address and then
+// handle requests on incoming connections.
 func (s *Server) ListenAndServe(addr string) error {
 	return http.ListenAndServe(addr, nil)
 }
