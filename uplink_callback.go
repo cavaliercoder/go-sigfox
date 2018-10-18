@@ -27,6 +27,7 @@ func (f UplinkHandlerFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}).ServeHTTP(w, r)
 }
 
+// Equal returns true if the values of two callback structs are equal.
 func (c *UplinkCallback) Equal(u *UplinkCallback) bool {
 	return c.callback.Equal(u.callback)
 }
