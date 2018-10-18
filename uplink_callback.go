@@ -32,7 +32,7 @@ func (c *UplinkCallback) Equal(u *UplinkCallback) bool {
 	return c.callback.Equal(u.callback)
 }
 
-// Timestamp of the received message
+// Timestamp returns timestamp of the received message.
 func (c *UplinkCallback) Timestamp() time.Time {
 	return time.Unix(c.callback.TimestampEpoch, 0)
 }
