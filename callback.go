@@ -3,6 +3,7 @@ package sigfox
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -32,7 +33,12 @@ type callback struct {
 
 // parseCallback parses a http.Request and returns a base sigfox callback
 func parseCallback(r *http.Request, cb *callback) (int, error) {
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			log.Printf("body close: %v", err)
+		}
+	}()
 
 	contentType := r.Header.Get("Content-Type")
 
