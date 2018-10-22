@@ -3,6 +3,7 @@ package sigfox
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -18,7 +19,6 @@ type Callback interface {
 type callback struct {
 	TimestampEpoch int64   `json:"time"`
 	DeviceID       string  `json:"device"`
-	IsDuplicate    bool    `json:"duplicate"`
 	SNR            float64 `json:"snr"`
 	RSSI           float64 `json:"rssi"`
 	AverageSNR     float64 `json:"avgSnr"`
@@ -28,11 +28,17 @@ type callback struct {
 	Longitude      int64   `json:"lng"`
 	SequenceNumber int64   `json:"seqNumber"`
 	Bidirectional  bool    `json:"ack"`
+	IsDuplicate    bool    `json:"duplicate"`
 }
 
 // parseCallback parses a http.Request and returns a base sigfox callback
 func parseCallback(r *http.Request, cb *callback) (int, error) {
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			log.Printf("body close: %v", err)
+		}
+	}()
 
 	contentType := r.Header.Get("Content-Type")
 
