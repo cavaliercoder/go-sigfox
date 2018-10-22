@@ -43,7 +43,7 @@ func (c *UplinkCallback) DeviceID() string {
 }
 
 // IsDuplicate reports whether message is a duplicate.
-// Meanding that the backend has already processes
+// Meaning that the backend has already processes
 // message from a different base station.
 func (c *UplinkCallback) IsDuplicate() bool {
 	return c.callback.IsDuplicate
